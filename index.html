@@ -1,2 +1,235 @@
-<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EL.Bosho | المنيو</title><style>body{margin:0;background:#17120e;color:#21170e;font-family:Tahoma,Arial}.wrap{max-width:760px;margin:auto;padding:18px}.hero{background:#f6a441;padding:20px;border-radius:22px;text-align:center}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tabs button,.send{border:0;border-radius:20px;padding:10px 15px;background:#f6a441;font-weight:bold}.card{background:#fff4e4;padding:12px 14px;border-radius:14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}.card button{border:0;border-radius:50%;width:36px;height:36px;background:#f6a441;font-size:20px}.cart{position:sticky;bottom:0;background:#211a14;color:white;padding:14px;border-radius:15px;display:flex;justify-content:space-between;align-items:center}.form{display:grid;gap:8px;margin:12px 0}.form input,.form textarea{padding:11px;border-radius:10px;border:1px solid #d6c5b0}#msg{color:white}</style><div class="wrap"><header class="hero"><h1>EL.Bosho البوشو</h1><div>منيو الطلبات</div><p>بعض أسماء وأسعار القائمة مستخرجة من صور المنيو وتحتاج مراجعة المطعم.</p></header><div id="tabs" class="tabs"></div><main id="items">جاري تحميل المنيو…</main><section class="form"><input id="customer" placeholder="الاسم"><input id="phone" placeholder="رقم الهاتف"><textarea id="note" placeholder="ملاحظات الطلب"></textarea></section><div class="cart"><span id="sum">السلة فارغة</span><button class="send" onclick="submitOrder()">إرسال الطلب</button></div><p id="msg"></p></div><script>
-const API='https://YOUR-API-HOST';let products=[],cart={};const $=id=>document.getElementById(id);async function init(){try{let r=await fetch(API+'/menu');if(!r.ok)throw Error();products=await r.json();let cats=[...new Set(products.map(p=>p.category))];$('tabs').innerHTML=cats.map((c,i)=>`<button onclick="show('${encodeURIComponent(c)}')">${c}</button>`).join('');if(cats.length)show(encodeURIComponent(cats[0]));else $('items').textContent='المنيو غير متاح حالياً.'}catch(e){$('items').textContent='المنيو غير متاح حالياً. يرجى الاتصال بالمطعم.'}}function show(cat){cat=decodeURIComponent(cat);$('items').innerHTML=products.filter(p=>p.category===cat).map(p=>`<div class="card"><div>${p.name}<small style="display:block">${(p.price/100).toFixed(2)} ج.م</small></div><button onclick="add('${p.id}')">+</button></div>`).join('')}function add(id){cart[id]=(cart[id]||0)+1;update()}function update(){let n=Object.values(cart).reduce((a,b)=>a+b,0),s=Object.entries(cart).reduce((a,[id,q])=>a+products.find(p=>p.id===id).price*q,0);$('sum').textContent=n?`${n} صنف • ${(s/100).toFixed(2)} ج.م`:'السلة فارغة'}async function submitOrder(){if(!Object.keys(cart).length)return;$('msg').textContent='';let payload={customer:$('customer').value.trim(),phone:$('phone').value.trim(),note:$('note').value.trim(),items:Object.entries(cart).map(([product_id,qty])=>({product_id,qty,options:[]}))};if(!payload.customer||!payload.phone){$('msg').textContent='يرجى كتابة الاسم ورقم الهاتف.';return}try{let r=await fetch(API+'/orders',{method:'POST',headers:{'Content-Type':'application/json','Idempotency-Key':crypto.randomUUID()},body:JSON.stringify(payload)});let d=await r.json();if(!r.ok)throw Error(d.error||'تعذر إرسال الطلب');$('msg').textContent=`تم إرسال الطلب بنجاح. رقم الطلب: ${d.id.slice(0,8)}`;cart={};update()}catch(e){$('msg').textContent='تعذر إرسال الطلب الآن. يرجى الاتصال بالمطعم.'}}init();</script></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171313">
+  <meta name="description" content="منيو EL.BOSHO البوشو - كريب وسندوتشات ووجبات">
+
+  <title>EL.BOSHO | البوشو</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#home">
+    <span class="brand-mark">♨</span>
+    <span>
+      <b>EL.BOSHO</b>
+      <small>البوشو · كريب وسندوتشات</small>
+    </span>
+  </a>
+
+  <button class="cart-top" id="openCart">
+    السلة <span id="cartCount">0</span>
+  </button>
+</header>
+
+<main id="home">
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+      <span class="eyebrow">طعم يفرق من أول قضمة</span>
+
+      <h1>الجوع له <em>حل.</em></h1>
+
+      <p>
+        اختار أكلك المفضل من منيو البوشو واطلبه بسهولة.
+      </p>
+
+      <a href="#menu" class="primary-btn">
+        تصفح المنيو <span>←</span>
+      </a>
+
+      <div class="hero-tags">
+        <span>🔥 طازة دايماً</span>
+        <span>🥙 كريب وسندوتشات</span>
+        <span>🍟 وجبات</span>
+      </div>
+    </div>
+
+    <div class="hero-stamp">
+      EL
+      <b>BOSHO</b>
+      <small>البوشو</small>
+    </div>
+  </section>
+
+  <section class="menu-section" id="menu">
+
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">اختار اللي نفسك فيه</span>
+        <h2>المنيو <em>بتاعنا</em></h2>
+      </div>
+
+      <div class="search-wrap">
+        <span>⌕</span>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="دور على أكلك..."
+          aria-label="ابحث في المنيو"
+        >
+      </div>
+    </div>
+
+    <nav class="categories" id="categories" aria-label="أقسام المنيو"></nav>
+
+    <div class="results-line">
+      <span id="resultCount"></span>
+      <span>الأسعار بالجنيه المصري</span>
+    </div>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div id="emptyState" class="empty hidden">
+      مفيش أصناف مطابقة للبحث 🤷
+    </div>
+
+  </section>
+
+  <section class="contact-strip">
+    <div>
+      <span class="eyebrow">جاهز تطلب؟</span>
+      <h2>طلبك على <em>البوشو</em></h2>
+      <p>ابعتلنا طلبك على واتساب وهنأكد معاك التفاصيل.</p>
+    </div>
+
+    <a
+      class="primary-btn"
+      href="https://wa.me/201030304499"
+      target="_blank"
+      rel="noopener"
+    >
+      كلمنا واتساب ↗
+    </a>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">
+    EL.BOSHO <span>البوشو</span>
+  </div>
+
+  <p>كريب · سندوتشات · وجبات</p>
+
+  <div class="phones">
+    <a href="tel:01030304499">01030304499</a>
+    <a href="tel:01055992525">01055992525</a>
+  </div>
+
+  <small>
+    © <span id="year"></span> EL.BOSHO — جميع الحقوق محفوظة
+  </small>
+</footer>
+
+<!-- Cart overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Shopping cart -->
+<aside class="cart-drawer" id="cartDrawer" aria-label="سلة الطلب">
+
+  <div class="drawer-head">
+    <div>
+      <span class="eyebrow">طلبك</span>
+      <h2>سلة المشتريات</h2>
+    </div>
+
+    <button class="icon-btn" id="closeCart" aria-label="إغلاق">
+      ✕
+    </button>
+  </div>
+
+  <div class="cart-items" id="cartItems"></div>
+
+  <div class="cart-empty" id="cartEmpty">
+    السلة لسه فاضية. اختار حاجة حلوة 😋
+  </div>
+
+  <div class="cart-bottom">
+    <div class="total-row">
+      <span>الإجمالي</span>
+      <strong id="cartTotal">0 ج.م</strong>
+    </div>
+
+    <button class="primary-btn full" id="checkoutBtn">
+      إكمال الطلب عبر واتساب
+    </button>
+
+    <small>
+      الدفع عند الاستلام / في المطعم حسب الاتفاق.
+    </small>
+  </div>
+
+</aside>
+
+<!-- Checkout modal -->
+<div class="modal-backdrop" id="checkoutModal">
+
+  <form class="checkout-modal" id="checkoutForm">
+
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">آخر خطوة</span>
+        <h2>بيانات الطلب</h2>
+      </div>
+
+      <button type="button" class="icon-btn" id="closeCheckout">
+        ✕
+      </button>
+    </div>
+
+    <label>
+      الاسم
+      <input name="name" required placeholder="اسمك">
+    </label>
+
+    <label>
+      رقم الموبايل
+      <input
+        name="phone"
+        required
+        inputmode="tel"
+        placeholder="01xxxxxxxxx"
+      >
+    </label>
+
+    <label>
+      طريقة الاستلام
+      <select name="method">
+        <option value="توصيل">توصيل</option>
+        <option value="استلام من المطعم">استلام من المطعم</option>
+      </select>
+    </label>
+
+    <label>
+      العنوان / ملاحظات
+      <textarea
+        name="address"
+        rows="2"
+        placeholder="اكتب العنوان أو أي ملاحظات"
+      ></textarea>
+    </label>
+
+    <button class="primary-btn full" type="submit">
+      إرسال الطلب على واتساب ↗
+    </button>
+
+  </form>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

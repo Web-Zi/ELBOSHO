@@ -1,235 +1,183 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#171313">
-  <meta name="description" content="منيو EL.BOSHO البوشو - كريب وسندوتشات ووجبات">
-
-  <title>EL.BOSHO | البوشو</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EL-BOSHO | البوشو</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff7ec;--card:#fff;--tx:#1b1b1b;--mut:#777;--or:#f6a02a;--bd:#f0dcc0}
+[data-t=dark]{--bg:#141414;--card:#212121;--tx:#f5f5f5;--mut:#aaa;--bd:#363636}
+*{box-sizing:border-box;margin:0}
+body{font-family:Cairo,sans-serif;background:var(--bg);color:var(--tx);padding-bottom:80px}
+button{font:inherit;cursor:pointer;border:0}
+header{position:sticky;top:0;z-index:20;background:var(--or);color:#1b1b1b;display:flex;align-items:center;gap:8px;padding:8px 14px}
+header .lg{font-weight:900;font-size:22px;flex:1}
+header button{background:#1b1b1b;color:var(--or);border-radius:20px;padding:6px 12px;font-weight:700;position:relative}
+#cn{position:absolute;top:-6px;inset-inline-end:-4px;background:#e53935;color:#fff;border-radius:10px;font-size:11px;padding:0 6px}
+#chips{position:sticky;top:50px;z-index:15;display:flex;gap:8px;overflow-x:auto;padding:10px 14px;background:var(--bg);scrollbar-width:none}
+#chips a{white-space:nowrap;background:var(--card);border:2px solid var(--or);color:var(--tx);border-radius:20px;padding:4px 14px;text-decoration:none;font-weight:700;font-size:14px}
+#tr{margin:10px 14px;background:#1b1b1b;color:var(--or);padding:10px;border-radius:12px;text-align:center;font-weight:700}
+section{padding:6px 14px;scroll-margin-top:110px}
+h2{font-size:22px;font-weight:900;margin:14px 0 8px;border-inline-start:6px solid var(--or);padding-inline-start:10px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.it{background:var(--card);border:2px solid var(--bd);border-radius:16px;padding:12px;position:relative;cursor:pointer;animation:up .5s both;animation-delay:calc(var(--i)*60ms);transition:transform .2s,border-color .2s}
+.it:hover{transform:translateY(-4px) rotate(-.4deg);border-color:var(--or)}
+.it h3{font-size:16px}.it p{font-size:12px;color:var(--mut);margin-top:4px}
+.pr{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-weight:900;color:var(--or);font-size:18px}
+.pr button{background:var(--or);width:32px;height:32px;border-radius:50%;font-size:20px;font-weight:900}
+.nw{position:absolute;top:-8px;inset-inline-end:10px;background:#e53935;color:#fff;font-size:11px;padding:1px 8px;border-radius:8px}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+#sp{position:fixed;inset:0;z-index:99;background:#1b1b1b;display:grid;place-items:center;transition:opacity .6s,visibility .6s}
+#sp.off{opacity:0;visibility:hidden}
+#sp .lg{color:var(--or);font-size:54px;font-weight:900;text-align:center;animation:pop 1.2s ease both;text-shadow:0 0 30px #f6a02a88}
+#sp small{display:block;font-size:30px;color:#fff}
+@keyframes pop{0%{transform:scale(.3) rotate(-8deg);opacity:0}60%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1)}}
+.ov{position:fixed;inset:0;background:#000a;z-index:50;display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.sh{background:var(--card);width:100%;max-width:520px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px;animation:up .3s}
+.sh h3{font-size:20px}.sh .d{color:var(--mut);font-size:13px;margin:4px 0 10px}
+.st{display:flex;align-items:center;gap:12px;font-weight:900;font-size:20px;margin:10px 0}
+.st button{width:36px;height:36px;border-radius:50%;background:var(--or);font-size:20px;font-weight:900}
+.ex label{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)}
+input,textarea{width:100%;font:inherit;padding:10px;border-radius:10px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);margin-top:8px}
+.big{width:100%;background:var(--or);color:#1b1b1b;padding:12px;border-radius:14px;font-weight:900;font-size:17px;margin-top:12px}
+.big:disabled{opacity:.5}
+.ln{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.ln small{display:block;color:var(--mut)}
+.ln .q{display:flex;align-items:center;gap:8px;font-weight:900}
+.ln .q button{width:28px;height:28px;border-radius:50%;background:var(--or);font-weight:900}
+.tot{display:flex;justify-content:space-between;font-weight:900;font-size:20px;margin:12px 0}
+footer{margin:30px 14px 0;padding:18px;background:#1b1b1b;color:#fff;border-radius:16px;text-align:center;line-height:2}
+footer a{color:var(--or);font-weight:700;text-decoration:none;display:inline-block;margin:0 8px}
+#fab{position:fixed;bottom:14px;inset-inline:14px;z-index:30;display:none}
+</style>
 </head>
-
 <body>
-
-<header class="topbar">
-  <a class="brand" href="#home">
-    <span class="brand-mark">♨</span>
-    <span>
-      <b>EL.BOSHO</b>
-      <small>البوشو · كريب وسندوتشات</small>
-    </span>
-  </a>
-
-  <button class="cart-top" id="openCart">
-    السلة <span id="cartCount">0</span>
-  </button>
+<div id="sp"><div class="lg">EL-BOSHO<small>البوشو</small></div></div>
+<header>
+  <div class="lg">EL-BOSHO · البوشو</div>
+  <button id="bl" onclick="setL()">EN</button>
+  <button id="bt" onclick="setT()">🌓</button>
+  <button onclick="openCart()">🛒<span id="cn">0</span></button>
 </header>
+<div id="tr" hidden></div>
+<nav id="chips"></nav>
+<main id="menu"></main>
+<footer id="ft"></footer>
+<div id="fab"><button class="big" onclick="openCart()"></button></div>
+<div class="ov" id="m" onclick="if(event.target==this)this.classList.remove('on')"><div class="sh" id="mb"></div></div>
+<div class="ov" id="c" onclick="if(event.target==this)this.classList.remove('on')"><div class="sh" id="cb"></div></div>
 
-<main id="home">
+<script>
+const U='https://bcdrbfxeiduvtavtedvo.supabase.co';
+const K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjZHJiZnhlaWR1dnRhdnRlZHZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ2ODY1NTQsImV4cCI6MjExMDI2MjU1NH0.0xrVkRfEZUEVdVADeKDTyl_AlOM2CHTc1R2Gdg_73bo';
+const H={apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'};
+const get=p=>fetch(U+'/rest/v1/'+p,{headers:H}).then(r=>r.json());
+const rpc=(f,b)=>fetch(U+'/rest/v1/rpc/'+f,{method:'POST',headers:H,body:JSON.stringify(b)}).then(async r=>{if(!r.ok)throw new Error(await r.text());return r.json()});
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls={g(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const T={
+ar:{cur:'ج',cart:'السلة',add:'أضف للسلة',notes:'ملاحظات (اختياري)',extras:'إضافات',empty:'السلة فارغة',total:'الإجمالي',name:'الاسم (اختياري)',ph:'رقم الموبايل',on:'ملاحظات على الطلب',send:'إرسال الطلب',pick:'الاستلام من المطعم فقط (تيك أواي)',badph:'اكتب رقم موبايل صحيح',err:'حدث خطأ، حاول مرة أخرى',view:'عرض السلة',addr:'العنوان',call:'للطلب والاستفسار',fb:'صفحتنا على فيسبوك',
+st_new:'تم استلام طلبك',st_accepted:'تم قبول طلبك',st_preparing:'جاري التحضير',st_ready:'جاهز للاستلام',st_done:'تم التسليم',st_cancelled:'تم إلغاء الطلب',order:'طلب رقم'},
+en:{cur:'EGP',cart:'Cart',add:'Add to cart',notes:'Notes (optional)',extras:'Extras',empty:'Your cart is empty',total:'Total',name:'Name (optional)',ph:'Mobile number',on:'Order notes',send:'Send order',pick:'Pickup from the restaurant only (takeaway)',badph:'Enter a valid mobile number',err:'Something went wrong, try again',view:'View cart',addr:'Address',call:'Call to order',fb:'Our Facebook page',
+st_new:'Order received',st_accepted:'Order accepted',st_preparing:'Being prepared',st_ready:'Ready for pickup',st_done:'Delivered',st_cancelled:'Order cancelled',order:'Order #'}
+};
+let L=ls.g('eb_l')||'ar',cats=[],items=[],cart=ls.g('eb_cart')||[],info={},q=1,cur=null;
+const t=k=>T[L][k];
+const cn=c=>esc(L=='ar'?c.name_ar:(c.name_en||c.name_ar));
+const save=()=>{ls.s('eb_cart',cart);badge()};
+const sum=()=>cart.reduce((a,l)=>a+l.price*l.qty,0);
+const cnt=()=>cart.reduce((a,l)=>a+l.qty,0);
 
-  <section class="hero">
-    <div class="hero-glow"></div>
+function setT(v){const d=v||(document.documentElement.dataset.t=='dark'?'light':'dark');document.documentElement.dataset.t=d;ls.s('eb_t',d)}
+function setL(){L=L=='ar'?'en':'ar';ls.s('eb_l',L);render()}
+function badge(){$('#cn').textContent=cnt();const f=$('#fab');f.style.display=cnt()?'block':'none';f.firstChild.textContent=t('view')+' · '+sum()+' '+t('cur')}
 
-    <div class="hero-content">
-      <span class="eyebrow">طعم يفرق من أول قضمة</span>
+function render(){
+  document.documentElement.lang=L;document.documentElement.dir=L=='ar'?'rtl':'ltr';
+  $('#bl').textContent=L=='ar'?'EN':'عربي';
+  $('#chips').innerHTML=cats.filter(c=>items.some(i=>i.category_id==c.id)).map(c=>`<a href="#c_${c.id}">${cn(c)}</a>`).join('');
+  $('#menu').innerHTML=cats.map(c=>{
+    const li=items.filter(i=>i.category_id==c.id);if(!li.length)return'';
+    return `<section id="c_${c.id}"><h2>${cn(c)}</h2><div class="g">`+li.map((i,n)=>`<div class="it" style="--i:${n}" onclick="openItem('${i.id}')">${i.is_new?'<b class="nw">NEW</b>':''}<h3>${esc(i.name_ar)}</h3>${i.description?`<p>${esc(i.description)}</p>`:''}<div class="pr"><span>${+i.price} ${t('cur')}</span><button>+</button></div></div>`).join('')+`</div></section>`;
+  }).join('');
+  const ph=(info.phones||[]).map(p=>`<a href="tel:${esc(p)}">📞 ${esc(p)}</a>`).join('');
+  $('#ft').innerHTML=`<div style="font-size:22px;font-weight:900;color:var(--or)">EL-BOSHO · البوشو</div><div>${t('call')}</div><div>${ph}</div><div>📍 ${t('addr')}: ${esc(info.address)}</div>${info.facebook?`<div><a href="${esc(info.facebook)}" target="_blank" rel="noopener">${t('fb')}</a></div>`:''}`;
+  badge();track();
+}
 
-      <h1>الجوع له <em>حل.</em></h1>
+function openItem(id){
+  cur=items.find(i=>i.id==id);q=1;
+  const ex=items.filter(i=>i.category_id=='extras'&&i.id!=id);
+  $('#mb').innerHTML=`<h3>${esc(cur.name_ar)}</h3><div class="d">${esc(cur.description||'')}</div>
+  <div class="st"><button onclick="qty(-1)">−</button><span id="qv">1</span><button onclick="qty(1)">+</button></div>
+  ${cur.category_id!='extras'&&ex.length?`<div class="ex"><b>${t('extras')}</b>${ex.map(e=>`<label><span><input type="checkbox" style="width:auto;margin:0 6px" value="${e.id}" onchange="upd()">${esc(e.name_ar)}</span><span>+${+e.price}</span></label>`).join('')}</div>`:''}
+  <textarea id="inn" rows="2" placeholder="${t('notes')}"></textarea>
+  <button class="big" id="ab" onclick="addCur()"></button>`;
+  upd();$('#m').classList.add('on');
+}
+function chosen(){return[...document.querySelectorAll('#mb .ex input:checked')].map(c=>items.find(i=>i.id==c.value))}
+function qty(d){q=Math.max(1,Math.min(50,q+d));$('#qv').textContent=q;upd()}
+function upd(){$('#ab').textContent=t('add')+' · '+((+cur.price+chosen().reduce((a,e)=>a+ +e.price,0))*q)+' '+t('cur')}
+function addLine(it,n,notes){const k=it.id+'|'+notes;const l=cart.find(x=>x.k==k);l?l.qty+=n:cart.push({k,id:it.id,name:it.name_ar,price:+it.price,qty:n,notes})}
+function addCur(){
+  const n=$('#inn').value.trim();addLine(cur,q,n);
+  chosen().forEach(e=>addLine(e,q,'+ '+cur.name_ar));
+  save();$('#m').classList.remove('on');
+}
 
-      <p>
-        اختار أكلك المفضل من منيو البوشو واطلبه بسهولة.
-      </p>
+function openCart(){
+  const o=$('#cb');
+  if(!cart.length){o.innerHTML=`<h3>${t('cart')}</h3><p class="d">${t('empty')}</p>`;$('#c').classList.add('on');return}
+  o.innerHTML=`<h3>${t('cart')}</h3>`+cart.map((l,i)=>`<div class="ln"><div>${esc(l.name)}<small>${esc(l.notes)}</small></div><div class="q"><button onclick="chg(${i},-1)">−</button>${l.qty}<button onclick="chg(${i},1)">+</button></div><b>${l.price*l.qty}</b></div>`).join('')+
+  `<div class="tot"><span>${t('total')}</span><span>${sum()} ${t('cur')}</span></div>
+  <div class="d">🥡 ${t('pick')}</div>
+  <input id="nm" placeholder="${t('name')}" maxlength="80" value="${esc(ls.g('eb_nm')||'')}">
+  <input id="ph" type="tel" inputmode="tel" placeholder="${t('ph')}" maxlength="15" value="${esc(ls.g('eb_ph')||'')}">
+  <textarea id="on" rows="2" placeholder="${t('on')}" maxlength="300"></textarea>
+  <button class="big" id="sb" onclick="send()">${t('send')}</button>`;
+  $('#c').classList.add('on');
+}
+function chg(i,d){cart[i].qty+=d;if(cart[i].qty<1)cart.splice(i,1);save();openCart()}
 
-      <a href="#menu" class="primary-btn">
-        تصفح المنيو <span>←</span>
-      </a>
+async function send(){
+  const p=$('#ph').value.trim();
+  if(!/^[0-9+\s]{8,15}$/.test(p)){alert(t('badph'));return}
+  const b=$('#sb');b.disabled=true;
+  try{
+    const r=await rpc('place_order',{p_source:'web',p_name:$('#nm').value.trim(),p_phone:p,p_notes:$('#on').value.trim(),
+      p_items:cart.map(l=>({item_id:l.id,qty:l.qty,notes:l.notes}))});
+    ls.s('eb_nm',$('#nm').value.trim());ls.s('eb_ph',p);ls.s('eb_order',r);
+    cart=[];save();$('#c').classList.remove('on');track();scrollTo({top:0,behavior:'smooth'});
+  }catch(e){alert(t('err'));b.disabled=false}
+}
 
-      <div class="hero-tags">
-        <span>🔥 طازة دايماً</span>
-        <span>🥙 كريب وسندوتشات</span>
-        <span>🍟 وجبات</span>
-      </div>
-    </div>
+let tm;
+function track(){
+  clearInterval(tm);const o=ls.g('eb_order'),bar=$('#tr');
+  if(!o){bar.hidden=true;return}
+  const f=async()=>{
+    try{
+      const s=await rpc('get_order_status',{p_id:o.id});
+      if(!s){ls.s('eb_order',null);bar.hidden=true;clearInterval(tm);return}
+      bar.hidden=false;bar.textContent=`${t('order')} ${s.number} · ${t('st_'+s.status)}`;
+      if(s.status=='done'||s.status=='cancelled'){clearInterval(tm);setTimeout(()=>{ls.s('eb_order',null);bar.hidden=true},120000)}
+    }catch(e){}
+  };
+  f();tm=setInterval(f,5000);
+}
 
-    <div class="hero-stamp">
-      EL
-      <b>BOSHO</b>
-      <small>البوشو</small>
-    </div>
-  </section>
-
-  <section class="menu-section" id="menu">
-
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow">اختار اللي نفسك فيه</span>
-        <h2>المنيو <em>بتاعنا</em></h2>
-      </div>
-
-      <div class="search-wrap">
-        <span>⌕</span>
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="دور على أكلك..."
-          aria-label="ابحث في المنيو"
-        >
-      </div>
-    </div>
-
-    <nav class="categories" id="categories" aria-label="أقسام المنيو"></nav>
-
-    <div class="results-line">
-      <span id="resultCount"></span>
-      <span>الأسعار بالجنيه المصري</span>
-    </div>
-
-    <div class="products-grid" id="productsGrid"></div>
-
-    <div id="emptyState" class="empty hidden">
-      مفيش أصناف مطابقة للبحث 🤷
-    </div>
-
-  </section>
-
-  <section class="contact-strip">
-    <div>
-      <span class="eyebrow">جاهز تطلب؟</span>
-      <h2>طلبك على <em>البوشو</em></h2>
-      <p>ابعتلنا طلبك على واتساب وهنأكد معاك التفاصيل.</p>
-    </div>
-
-    <a
-      class="primary-btn"
-      href="https://wa.me/201030304499"
-      target="_blank"
-      rel="noopener"
-    >
-      كلمنا واتساب ↗
-    </a>
-  </section>
-
-</main>
-
-<footer>
-  <div class="footer-brand">
-    EL.BOSHO <span>البوشو</span>
-  </div>
-
-  <p>كريب · سندوتشات · وجبات</p>
-
-  <div class="phones">
-    <a href="tel:01030304499">01030304499</a>
-    <a href="tel:01055992525">01055992525</a>
-  </div>
-
-  <small>
-    © <span id="year"></span> EL.BOSHO — جميع الحقوق محفوظة
-  </small>
-</footer>
-
-<!-- Cart overlay -->
-<div class="overlay" id="overlay"></div>
-
-<!-- Shopping cart -->
-<aside class="cart-drawer" id="cartDrawer" aria-label="سلة الطلب">
-
-  <div class="drawer-head">
-    <div>
-      <span class="eyebrow">طلبك</span>
-      <h2>سلة المشتريات</h2>
-    </div>
-
-    <button class="icon-btn" id="closeCart" aria-label="إغلاق">
-      ✕
-    </button>
-  </div>
-
-  <div class="cart-items" id="cartItems"></div>
-
-  <div class="cart-empty" id="cartEmpty">
-    السلة لسه فاضية. اختار حاجة حلوة 😋
-  </div>
-
-  <div class="cart-bottom">
-    <div class="total-row">
-      <span>الإجمالي</span>
-      <strong id="cartTotal">0 ج.م</strong>
-    </div>
-
-    <button class="primary-btn full" id="checkoutBtn">
-      إكمال الطلب عبر واتساب
-    </button>
-
-    <small>
-      الدفع عند الاستلام / في المطعم حسب الاتفاق.
-    </small>
-  </div>
-
-</aside>
-
-<!-- Checkout modal -->
-<div class="modal-backdrop" id="checkoutModal">
-
-  <form class="checkout-modal" id="checkoutForm">
-
-    <div class="drawer-head">
-      <div>
-        <span class="eyebrow">آخر خطوة</span>
-        <h2>بيانات الطلب</h2>
-      </div>
-
-      <button type="button" class="icon-btn" id="closeCheckout">
-        ✕
-      </button>
-    </div>
-
-    <label>
-      الاسم
-      <input name="name" required placeholder="اسمك">
-    </label>
-
-    <label>
-      رقم الموبايل
-      <input
-        name="phone"
-        required
-        inputmode="tel"
-        placeholder="01xxxxxxxxx"
-      >
-    </label>
-
-    <label>
-      طريقة الاستلام
-      <select name="method">
-        <option value="توصيل">توصيل</option>
-        <option value="استلام من المطعم">استلام من المطعم</option>
-      </select>
-    </label>
-
-    <label>
-      العنوان / ملاحظات
-      <textarea
-        name="address"
-        rows="2"
-        placeholder="اكتب العنوان أو أي ملاحظات"
-      ></textarea>
-    </label>
-
-    <button class="primary-btn full" type="submit">
-      إرسال الطلب على واتساب ↗
-    </button>
-
-  </form>
-
-</div>
-
-<script src="script.js"></script>
-
+(async()=>{
+  setT(ls.g('eb_t')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
+  setTimeout(()=>$('#sp').classList.add('off'),1700);
+  try{
+    const [c,i,s]=await Promise.all([get('categories?select=*&order=sort'),get('items?select=*&order=sort'),get('settings?select=*&key=eq.public_info')]);
+    cats=c;items=i;info=(s[0]&&s[0].value)||{};
+  }catch(e){}
+  render();
+})();
+</script>
 </body>
 </html>

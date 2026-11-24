@@ -50,6 +50,7 @@ h2{font-size:20px;font-weight:800;margin:22px 0 8px}
 .st button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--rl);font-size:20px}
 input,textarea{width:100%;font:inherit;padding:11px;border-radius:12px;border:1.5px solid var(--rl);background:var(--bg);color:var(--tx);margin-top:8px}
 details{margin-top:10px}summary{cursor:pointer;font-weight:600;color:var(--mut)}
+.exb{width:100%;padding:13px;border-radius:12px;background:var(--or);color:var(--ink);font-weight:800;font-size:16px;margin-top:10px}
 .ex label{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--rl)}
 .ex input{width:auto;margin:0 0 0 8px}
 .ln{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--rl)}
@@ -62,6 +63,10 @@ details{margin-top:10px}summary{cursor:pointer;font-weight:600;color:var(--mut)}
 .pop.on{display:block}.pop button{display:block;width:100%;text-align:start;padding:10px 12px;border-radius:10px;font-weight:600}
 footer{margin:34px 14px 0;text-align:center;color:var(--mut);line-height:2;font-size:14px}
 footer a{color:var(--tx);font-weight:700;text-decoration:none;margin:0 8px;white-space:nowrap}
+.cl{font-weight:800;color:var(--tx);margin-bottom:6px}
+.ph{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+footer a.pbx{display:flex;align-items:center;gap:8px;margin:0;padding:11px 16px;border:2px solid var(--or);border-radius:14px;background:var(--sf);font-size:17px;direction:ltr}
+footer a.pbx:active{background:var(--or);color:var(--ink)}
 #sp{position:fixed;inset:0;z-index:99;background:var(--ink);color:var(--or);display:grid;place-items:center;font-weight:800;font-size:44px;text-align:center;transition:opacity .5s,visibility .5s}
 #sp small{display:block;color:#fff;font-size:24px;font-weight:600}
 #sp.off{opacity:0;visibility:hidden}
@@ -94,9 +99,9 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ls={g(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const T={
-ar:{cur:'ج',en:'English',dk:'الوضع الداكن',lt:'الوضع الفاتح',cart:'السلة',add:'أضف للسلة',notes:'ملاحظة على الصنف (اختياري)',extras:'إضافات',empty:'السلة فارغة',sub:'المجموع',dis:'خصم',tax:'ضريبة',total:'الإجمالي',name:'الاسم (اختياري)',ph:'رقم الموبايل',on:'ملاحظات على الطلب',more:'إضافة اسم أو ملاحظات',send:'إرسال الطلب',pick:'الاستلام من المطعم فقط',badph:'اكتب رقم موبايل صحيح',err:'حدث خطأ، حاول مرة أخرى',view:'عرض السلة',addr:'العنوان',fb:'فيسبوك',
+ar:{cur:'ج',en:'English',dk:'الوضع الداكن',lt:'الوضع الفاتح',cart:'السلة',add:'أضف للسلة',notes:'ملاحظة على الصنف (اختياري)',extras:'إضافات',empty:'السلة فارغة',sub:'المجموع',dis:'خصم',tax:'ضريبة',total:'الإجمالي',name:'الاسم',ph:'رقم الموبايل',on:'ملاحظات على الطلب',more:'إضافة ملاحظات على الطلب',badname:'اكتب اسمك',send:'إرسال الطلب',pick:'الاستلام من المطعم فقط',badph:'اكتب رقم موبايل صحيح',err:'حدث خطأ، حاول مرة أخرى',view:'عرض السلة',addr:'العنوان',fb:'فيسبوك',
 st_new:'تم استلام طلبك',st_accepted:'تم قبول طلبك',st_preparing:'جاري التحضير',st_ready:'جاهز للاستلام',st_done:'تم التسليم',st_cancelled:'تم إلغاء الطلب',order:'طلب رقم'},
-en:{cur:'EGP',en:'عربي',dk:'Dark mode',lt:'Light mode',cart:'Cart',add:'Add to cart',notes:'Item note (optional)',extras:'Extras',empty:'Your cart is empty',sub:'Subtotal',dis:'Discount',tax:'Tax',total:'Total',name:'Name (optional)',ph:'Mobile number',on:'Order notes',more:'Add name or notes',send:'Send order',pick:'Pickup from the restaurant only',badph:'Enter a valid mobile number',err:'Something went wrong, try again',view:'View cart',addr:'Address',fb:'Facebook',
+en:{cur:'EGP',en:'عربي',dk:'Dark mode',lt:'Light mode',cart:'Cart',add:'Add to cart',notes:'Item note (optional)',extras:'Extras',empty:'Your cart is empty',sub:'Subtotal',dis:'Discount',tax:'Tax',total:'Total',name:'Name',ph:'Mobile number',on:'Order notes',more:'Add order notes',badname:'Enter your name',send:'Send order',pick:'Pickup from the restaurant only',badph:'Enter a valid mobile number',err:'Something went wrong, try again',view:'View cart',addr:'Address',fb:'Facebook',
 st_new:'Order received',st_accepted:'Order accepted',st_preparing:'Being prepared',st_ready:'Ready for pickup',st_done:'Delivered',st_cancelled:'Order cancelled',order:'Order #'}
 };
 let L=ls.g('eb_l')||'ar',cats=[],items=[],periods=[],sales={},info={},cart=ls.g('eb_cart2')||[],q=1,cur=null;
@@ -133,8 +138,8 @@ function render(){
   const shown=cats.filter(c=>items.some(i=>i.category_id==c.id));
   $('#rail').innerHTML=shown.map(c=>`<a href="#c_${c.id}" data-c="${c.id}">${cn(c)}</a>`).join('');
   $('#menu').innerHTML=shown.map(c=>`<section id="c_${c.id}" data-c="${c.id}"><h2>${cn(c)}</h2><div class="ls">`+items.filter(i=>i.category_id==c.id).map(i=>`<div class="it" onclick="openItem('${i.id}')"><div class="t"><b>${esc(i.name_ar)}</b>${i.is_new?'<span class="nw">NEW</span>':''}${i.description?`<div class="d">${esc(i.description)}</div>`:''}</div><div class="pr">${priceHtml(i)}</div><button class="pl" aria-label="add">+</button></div>`).join('')+`</div></section>`).join('');
-  const ph=(info.phones||[]).map(p=>`<a href="tel:${esc(p)}">📞 ${esc(p)}</a>`).join('');
-  $('#ft').innerHTML=`<div>${ph}</div><div>📍 ${esc(info.address)}</div>${info.facebook?`<div><a href="${esc(info.facebook)}" target="_blank" rel="noopener">${t('fb')}</a></div>`:''}`;
+  const ph=(info.phones||[]).map(p=>`<a class="pbx" href="tel:${esc(p)}">📞 ${esc(p)}</a>`).join('');
+  $('#ft').innerHTML=`<div class="cl">${L=='ar'?'اتصل بنا':'Call us'}</div><div class="ph">${ph}</div><div style="margin-top:10px">📍 ${esc(info.address)}</div>${info.facebook?`<div><a href="${esc(info.facebook)}" target="_blank" rel="noopener">${t('fb')}</a></div>`:''}`;
   badge();track();watch();
 }
 let io;
@@ -153,12 +158,13 @@ function openItem(id){
   const ex=items.filter(i=>i.category_id=='extras'&&i.id!=id);
   $('#mb').innerHTML=`<h3>${esc(cur.name_ar)}</h3><div class="d">${esc(cur.description||'')}</div>
   <div class="st"><button onclick="qty(-1)">−</button><span id="qv">1</span><button onclick="qty(1)">+</button></div>
-  ${cur.category_id!='extras'&&ex.length?`<details class="ex"><summary>${t('extras')}</summary>${ex.map(e=>`<label><span><input type="checkbox" value="${e.id}" onchange="upd()">${esc(e.name_ar)}</span><span>+${fm(eff(e))}</span></label>`).join('')}</details>`:''}
+  ${cur.category_id!='extras'&&ex.length?`<button class="exb" onclick="tex()">＋ ${t('extras')}</button><div class="ex" id="exl" hidden>${ex.map(e=>`<label><span><input type="checkbox" value="${e.id}" onchange="upd()">${esc(e.name_ar)}</span><span>+${fm(eff(e))}</span></label>`).join('')}</div>`:''}
   <textarea id="inn" rows="2" placeholder="${t('notes')}"></textarea>
   <button class="big" id="ab" style="margin-top:12px" onclick="addCur()"></button>`;
   upd();$('#m').classList.add('on');
 }
 const chosen=()=>[...document.querySelectorAll('#mb .ex input:checked')].map(c=>item(c.value));
+function tex(){const l=$('#exl');l.hidden=!l.hidden}
 function qty(d){q=Math.max(1,Math.min(50,q+d));$('#qv').textContent=q;upd()}
 function upd(){$('#ab').textContent=t('add')+' · '+fm((eff(cur)+chosen().reduce((a,e)=>a+eff(e),0))*q)+' '+t('cur')}
 function addLine(i,n,notes){const k=i.id+'|'+notes,l=cart.find(x=>x.k==k);l?l.qty+=n:cart.push({k,id:i.id,qty:n,notes})}
@@ -177,18 +183,20 @@ function openCart(){
   (x.d||x.x?`<div class="sm"><span>${t('sub')}</span><span>${fm(x.s)}</span></div>`:'')+(x.d?`<div class="sm"><span>${t('dis')}</span><span>−${fm(x.d)}</span></div>`:'')+(x.x?`<div class="sm"><span>${t('tax')}</span><span>${fm(x.x)}</span></div>`:'')+
   `<div class="tt"><span>${t('total')}</span><span>${fm(x.t)} ${t('cur')}</span></div>
   <div class="d">🥡 ${t('pick')}</div>
-  <input id="ph" type="tel" inputmode="tel" placeholder="${t('ph')}" maxlength="15" value="${esc(ls.g('eb_ph')||'')}">
-  <details><summary>${t('more')}</summary><input id="nm" placeholder="${t('name')}" maxlength="80" value="${esc(ls.g('eb_nm')||'')}"><textarea id="on" rows="2" placeholder="${t('on')}" maxlength="300"></textarea></details>
+  <input id="nm" placeholder="${t('name')} *" maxlength="80" value="${esc(ls.g('eb_nm')||'')}">
+  <input id="ph" type="tel" inputmode="tel" placeholder="${t('ph')} *" maxlength="15" value="${esc(ls.g('eb_ph')||'')}">
+  <details><summary>${t('more')}</summary><textarea id="on" rows="2" placeholder="${t('on')}" maxlength="300"></textarea></details>
   <button class="big" id="sb" style="margin-top:14px" onclick="send()">${t('send')}</button>`;
   $('#c').classList.add('on');
 }
 function chg(n,d){cart[n].qty+=d;if(cart[n].qty<1)cart.splice(n,1);save();openCart()}
 
 async function send(){
-  const p=$('#ph').value.trim();
+  const nm=$('#nm').value.trim(),p=$('#ph').value.trim();
+  if(nm.length<2){alert(t('badname'));return}
   if(!/^[0-9+\s]{8,15}$/.test(p)){alert(t('badph'));return}
   const b=$('#sb');b.disabled=true;
-  const nm=$('#nm')?$('#nm').value.trim():'',on=$('#on')?$('#on').value.trim():'';
+  const on=$('#on')?$('#on').value.trim():'';
   try{
     const r=await rpc('place_order',{p_source:'web',p_name:nm,p_phone:p,p_notes:on,p_items:cart.map(l=>({item_id:l.id,qty:l.qty,notes:l.notes}))});
     ls.s('eb_nm',nm);ls.s('eb_ph',p);ls.s('eb_order',r);

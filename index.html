@@ -23,7 +23,6 @@ header{background:var(--or);color:var(--ink);padding:10px 14px;padding-top:calc(
 #rail a{flex:none;padding:6px 14px;border-radius:18px;border:1.5px solid var(--rl);color:var(--tx);text-decoration:none;font-weight:600;font-size:14px}
 #rail a.on{background:var(--ink);color:var(--or);border-color:var(--ink)}
 [data-t=dark] #rail a.on{background:var(--or);color:var(--ink);border-color:var(--or)}
-#trk{margin:12px 14px 0;padding:10px 12px;border-radius:12px;background:var(--ink);color:var(--or);font-weight:700;text-align:center}
 main{max-width:980px;margin:0 auto;padding:0 14px}
 section{scroll-margin-top:62px;content-visibility:auto;contain-intrinsic-size:auto 500px}
 h2{font-size:20px;font-weight:800;margin:22px 0 8px}
@@ -81,7 +80,6 @@ footer a.pbx:active{background:var(--or);color:var(--ink)}
   <button class="hb" onclick="openCart()" aria-label="cart">🛒<span id="cnt" hidden>0</span></button>
 </header>
 <div class="pop" id="pp"><button onclick="setL()" id="bl"></button><button onclick="setT()" id="bt"></button></div>
-<div id="trk" hidden></div>
 <nav id="rail"></nav>
 <main id="menu"></main>
 <footer id="ft"></footer>
@@ -98,13 +96,15 @@ const rpc=(f,b)=>fetch(U+'/rest/v1/rpc/'+f,{method:'POST',headers:H,body:JSON.st
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ls={g(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const ss={g(k){try{return JSON.parse(sessionStorage.getItem(k))}catch(e){return null}},s(k,v){try{sessionStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+['eb_cart2','eb_nm','eb_ph','eb_order'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
 const T={
-ar:{cur:'ج',en:'English',dk:'الوضع الداكن',lt:'الوضع الفاتح',cart:'السلة',add:'أضف للسلة',notes:'ملاحظة على الصنف (اختياري)',extras:'إضافات',empty:'السلة فارغة',sub:'المجموع',dis:'خصم',tax:'ضريبة',total:'الإجمالي',name:'الاسم',ph:'رقم الموبايل',on:'ملاحظات على الطلب',more:'إضافة ملاحظات على الطلب',badname:'اكتب اسمك',send:'إرسال الطلب',pick:'الاستلام من المطعم فقط',badph:'اكتب رقم موبايل صحيح',err:'حدث خطأ، حاول مرة أخرى',view:'عرض السلة',addr:'العنوان',fb:'فيسبوك',
+ar:{cur:'ج',en:'English',dk:'الوضع الداكن',lt:'الوضع الفاتح',cart:'السلة',add:'أضف للسلة',notes:'ملاحظة على الصنف (اختياري)',extras:'إضافات',empty:'السلة فارغة',sub:'المجموع',dis:'خصم',tax:'ضريبة',total:'الإجمالي',name:'الاسم',ph:'رقم الموبايل',on:'ملاحظات على الطلب',more:'إضافة ملاحظات على الطلب',badname:'اكتب اسمك',sent:'تم إرسال طلبك',sent2:'سنجهّز طلبك وتستلمه من المطعم.',ok:'تم',send:'إرسال الطلب',pick:'الاستلام من المطعم فقط',badph:'اكتب رقم موبايل صحيح',err:'حدث خطأ، حاول مرة أخرى',view:'عرض السلة',addr:'العنوان',fb:'فيسبوك',
 st_new:'تم استلام طلبك',st_accepted:'تم قبول طلبك',st_preparing:'جاري التحضير',st_ready:'جاهز للاستلام',st_done:'تم التسليم',st_cancelled:'تم إلغاء الطلب',order:'طلب رقم'},
-en:{cur:'EGP',en:'عربي',dk:'Dark mode',lt:'Light mode',cart:'Cart',add:'Add to cart',notes:'Item note (optional)',extras:'Extras',empty:'Your cart is empty',sub:'Subtotal',dis:'Discount',tax:'Tax',total:'Total',name:'Name',ph:'Mobile number',on:'Order notes',more:'Add order notes',badname:'Enter your name',send:'Send order',pick:'Pickup from the restaurant only',badph:'Enter a valid mobile number',err:'Something went wrong, try again',view:'View cart',addr:'Address',fb:'Facebook',
+en:{cur:'EGP',en:'عربي',dk:'Dark mode',lt:'Light mode',cart:'Cart',add:'Add to cart',notes:'Item note (optional)',extras:'Extras',empty:'Your cart is empty',sub:'Subtotal',dis:'Discount',tax:'Tax',total:'Total',name:'Name',ph:'Mobile number',on:'Order notes',more:'Add order notes',badname:'Enter your name',sent:'Your order was sent',sent2:'We will prepare it for pickup at the restaurant.',ok:'OK',send:'Send order',pick:'Pickup from the restaurant only',badph:'Enter a valid mobile number',err:'Something went wrong, try again',view:'View cart',addr:'Address',fb:'Facebook',
 st_new:'Order received',st_accepted:'Order accepted',st_preparing:'Being prepared',st_ready:'Ready for pickup',st_done:'Delivered',st_cancelled:'Order cancelled',order:'Order #'}
 };
-let L=ls.g('eb_l')||'ar',cats=[],items=[],periods=[],sales={},info={},cart=ls.g('eb_cart2')||[],q=1,cur=null;
+let L=ls.g('eb_l')||'ar',cats=[],items=[],periods=[],sales={},info={},cart=ss.g('eb_cart2')||[],q=1,cur=null;
 const t=k=>T[L][k];
 const cn=c=>esc(L=='ar'?c.name_ar:(c.name_en||c.name_ar));
 const fm=n=>+(+n).toFixed(2);
@@ -122,7 +122,7 @@ const item=id=>items.find(i=>i.id==id);
 const sub=()=>cart.reduce((a,l)=>{const i=item(l.id);return a+(i?eff(i)*l.qty:0)},0);
 function totals(){const s=sub(),d=r2(s*(+sales.general_discount_pct||0)/100),x=r2((s-d)*(+sales.tax_pct||0)/100);return{s,d,x,t:r2(s-d+x)}}
 const cnt=()=>cart.reduce((a,l)=>a+l.qty,0);
-const save=()=>{ls.s('eb_cart2',cart);badge()};
+const save=()=>{ss.s('eb_cart2',cart);badge()};
 
 function setT(v){const d=typeof v=='string'?v:(document.documentElement.dataset.t=='dark'?'light':'dark');document.documentElement.dataset.t=d;ls.s('eb_t',d);label()}
 function setL(){L=L=='ar'?'en':'ar';ls.s('eb_l',L);$('#pp').classList.remove('on');render()}
@@ -140,7 +140,7 @@ function render(){
   $('#menu').innerHTML=shown.map(c=>`<section id="c_${c.id}" data-c="${c.id}"><h2>${cn(c)}</h2><div class="ls">`+items.filter(i=>i.category_id==c.id).map(i=>`<div class="it" onclick="openItem('${i.id}')"><div class="t"><b>${esc(i.name_ar)}</b>${i.is_new?'<span class="nw">NEW</span>':''}${i.description?`<div class="d">${esc(i.description)}</div>`:''}</div><div class="pr">${priceHtml(i)}</div><button class="pl" aria-label="add">+</button></div>`).join('')+`</div></section>`).join('');
   const ph=(info.phones||[]).map(p=>`<a class="pbx" href="tel:${esc(p)}">📞 ${esc(p)}</a>`).join('');
   $('#ft').innerHTML=`<div class="cl">${L=='ar'?'اتصل بنا':'Call us'}</div><div class="ph">${ph}</div><div style="margin-top:10px">📍 ${esc(info.address)}</div>${info.facebook?`<div><a href="${esc(info.facebook)}" target="_blank" rel="noopener">${t('fb')}</a></div>`:''}`;
-  badge();track();watch();
+  badge();watch();
 }
 let io;
 function watch(){
@@ -183,8 +183,8 @@ function openCart(){
   (x.d||x.x?`<div class="sm"><span>${t('sub')}</span><span>${fm(x.s)}</span></div>`:'')+(x.d?`<div class="sm"><span>${t('dis')}</span><span>−${fm(x.d)}</span></div>`:'')+(x.x?`<div class="sm"><span>${t('tax')}</span><span>${fm(x.x)}</span></div>`:'')+
   `<div class="tt"><span>${t('total')}</span><span>${fm(x.t)} ${t('cur')}</span></div>
   <div class="d">🥡 ${t('pick')}</div>
-  <input id="nm" placeholder="${t('name')} *" maxlength="80" value="${esc(ls.g('eb_nm')||'')}">
-  <input id="ph" type="tel" inputmode="tel" placeholder="${t('ph')} *" maxlength="15" value="${esc(ls.g('eb_ph')||'')}">
+  <input id="nm" placeholder="${t('name')} *" maxlength="80" autocomplete="off">
+  <input id="ph" type="tel" inputmode="tel" placeholder="${t('ph')} *" maxlength="15" autocomplete="off">
   <details><summary>${t('more')}</summary><textarea id="on" rows="2" placeholder="${t('on')}" maxlength="300"></textarea></details>
   <button class="big" id="sb" style="margin-top:14px" onclick="send()">${t('send')}</button>`;
   $('#c').classList.add('on');
@@ -198,25 +198,10 @@ async function send(){
   const b=$('#sb');b.disabled=true;
   const on=$('#on')?$('#on').value.trim():'';
   try{
-    const r=await rpc('place_order',{p_source:'web',p_name:nm,p_phone:p,p_notes:on,p_items:cart.map(l=>({item_id:l.id,qty:l.qty,notes:l.notes}))});
-    ls.s('eb_nm',nm);ls.s('eb_ph',p);ls.s('eb_order',r);
-    cart=[];save();$('#c').classList.remove('on');track();scrollTo({top:0,behavior:'smooth'});
+    await rpc('place_order',{p_source:'web',p_name:nm,p_phone:p,p_notes:on,p_items:cart.map(l=>({item_id:l.id,qty:l.qty,notes:l.notes}))});
+    cart=[];save();
+    $('#cb').innerHTML=`<h3>✅ ${t('sent')}</h3><p class="d">${t('sent2')}</p><button class="big" style="margin-top:14px" onclick="$('#c').classList.remove('on')">${t('ok')}</button>`;
   }catch(e){alert(t('err'));b.disabled=false}
-}
-
-let tm;
-function track(){
-  clearInterval(tm);const o=ls.g('eb_order'),bar=$('#trk');
-  if(!o){bar.hidden=true;return}
-  const f=async()=>{
-    try{
-      const s=await rpc('get_order_status',{p_id:o.id});
-      if(!s){ls.s('eb_order',null);bar.hidden=true;clearInterval(tm);return}
-      bar.hidden=false;bar.textContent=`${t('order')} ${s.number} · ${t('st_'+s.status)}`;
-      if(s.status=='done'||s.status=='cancelled'){clearInterval(tm);setTimeout(()=>{ls.s('eb_order',null);bar.hidden=true},120000)}
-    }catch(e){}
-  };
-  f();tm=setInterval(f,5000);
 }
 
 async function load(){
